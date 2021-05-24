@@ -1,18 +1,31 @@
+const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack").container
-  .ModuleFederationPlugin;
+const { ModuleFederationPlugin } = require("webpack").container;
 const path = require("path");
-const deps = require("./package.json").dependencies;
+const pkg = require("./package.json");
+const name = pkg.name
+const deps = pkg.dependencies
+
+const mfe = {
+  name,
+  paths: [
+    'webclient/app3'
+  ],
+}
+
 module.exports = {
   entry: "./src/index",
   mode: "development",
+  target: "web",
   devServer: {
     contentBase: path.join(__dirname, "dist"),
-    port: 3003,
+    port: 3002,
   },
-  target: "web",
   output: {
-    publicPath: "auto",
+    filename: "[contenthash].bundle.js",
+    chunkFilename: "[id].[chunkhash].js",
+    path: path.resolve("dist"),
+    publicPath: "",
   },
   module: {
     rules: [
@@ -27,18 +40,25 @@ module.exports = {
     ],
   },
   plugins: [
+    new WebpackManifestPlugin({
+      generate: (seed, files, entries) => {
+        return {
+          ...mfe,
+          files: files.reduce(
+            (acc, cur) => ({ ...acc, [cur.name]: cur.path }),
+            {}
+          ),
+        };
+      },
+    }),
     new ModuleFederationPlugin({
-      name: "app3",
-      library: { type: "var", name: "app3" },
-      filename: "remoteEntry.js",
+      name: mfe.name,
+      filename: "remoteEntry.[chunkhash].js",
       exposes: {
         "./Widget": "./src/Widget",
       },
-      // adds react as shared module
-      // version is inferred from package.json
-      // there is no version check for the required version
-      // so it will always use the higher version found
       shared: {
+        moment: deps.moment,
         react: {
           requiredVersion: deps.react,
           import: "react", // the "react" package will be used a provided and fallback module
@@ -50,10 +70,6 @@ module.exports = {
           requiredVersion: deps["react-dom"],
           singleton: true, // only a single version of the shared module is allowed
         },
-        // adds moment as shared module
-        // version is inferred from package.json
-        // it will use the highest moment version that is >= 2.24 and < 3
-        moment: deps.moment,
       },
     }),
     new HtmlWebpackPlugin({
