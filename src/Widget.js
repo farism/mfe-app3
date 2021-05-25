@@ -10,7 +10,7 @@ export default function Widget() {
       style={{
         borderRadius: "4px",
         padding: "2em",
-        backgroundColor: "purple",
+        backgroundColor: "green",
         color: "white",
       }}
     >
