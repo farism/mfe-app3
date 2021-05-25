@@ -8,16 +8,16 @@ orbs:
 
 jobs:
   build:
-    docker: 
+    docker:
       - image: circleci/node:12.3.1
     steps:
       - checkout
       - run: yarn
       - run: yarn build
       - aws-s3/copy:
-            from: dist/
-            to: s3://mfestorage/apps/${APP_NAME}/${CIRCLE_BRANCH}
-            arguments: --recursive
+          from: dist/
+          to: s3://mfestorage/apps/${APP_NAME}/${CIRCLE_BRANCH}
+          arguments: --recursive
 
 workflows:
   build:

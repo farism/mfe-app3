@@ -44,7 +44,7 @@ module.exports = {
       publicPath: "",
       generate: (seed, files, entries) => {
         return {
-          ...mfe,
+          mfe,
           files: files.reduce(
             (acc, cur) => ({ ...acc, [cur.name]: cur.path }),
             {}
