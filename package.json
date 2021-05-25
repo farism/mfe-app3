@@ -16,6 +16,7 @@
   "scripts": {
     "start": "webpack-cli serve",
     "build": "webpack --mode production",
+    "build:prod": "NODE_ENV=production webpack --mode production",
     "serve": "serve dist -p 3003",
     "clean": "rm -rf dist"
   },
