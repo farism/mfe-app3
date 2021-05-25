@@ -13,7 +13,7 @@ jobs:
     steps:
       - checkout
       - run: yarn
-      - run: yarn build:prod
+      - run: yarn build
       - aws-s3/copy:
           from: dist/
           to: s3://mfestorage/apps/${APP_NAME}/${CIRCLE_BRANCH}
