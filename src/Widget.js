@@ -19,6 +19,7 @@ export default function Widget() {
         Using <strong>momentjs</strong> for format the date
       </p>
       <p>{moment().format("MMMM Do YYYY, h:mm:ss a")}</p>
+      <p>This is a feature branch</p>
     </div>
   );
 }
