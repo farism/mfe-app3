@@ -10,6 +10,7 @@ const isProd = process.env.NODE_ENV === "production";
 const mfe = {
   name,
   paths: ["webclient/app3"],
+  module: "./Widget",
 };
 
 module.exports = {
